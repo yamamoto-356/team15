@@ -1,42 +1,48 @@
-int cols = 5;
-int rows = 13;
-int blockWidth = 30;
-int blockHeight = 30;
-int margin = 5;
+class Block {
+  int col, row;
+  int side;
 
-void setup() {
-  size(200, 450);
-  background(255);
-  noStroke();
-  drawBlocks();
-}
+  boolean isMoving;    // 動くかどうか
+  int moveDir = 1;     // 1 = 右, -1 = 左
+  int moveCooldown = 0; // 移動タイミング用カウンタ
 
-void drawBlocks() {
-  for (int i = 0; i < rows; i++) {
-   
-    ArrayList<Integer> specialCols = new ArrayList<Integer>();
-    int numSpecial = int(random(1,3)); 
+  Block(int col, int row, int side) {
+    this.col = col;
+    this.row = row;
+    this.side = side;
+    this.isMoving = false;
+  }
 
-    while (specialCols.size() < numSpecial) {
-      int randCol = int(random(cols));
-      if (!specialCols.contains(randCol)) {
-        specialCols.add(randCol);
+  void setMoving(boolean moving) {
+    isMoving = moving;
+  }
+
+  void update() {
+    if (isMoving) {
+      moveCooldown--;
+      if (moveCooldown <= 0) {
+        int nextCol = col + moveDir;
+        if (nextCol < 0 || nextCol >= colsPerPlayer) {
+          moveDir *= -1;
+          nextCol = col + moveDir;
+        }
+        col = nextCol;
+        moveCooldown = 30; // 動く間隔（フレーム数）
       }
     }
+  }
 
-    for (int j = 0; j < cols; j++) {
-      float x = j * (blockWidth + margin);
-      float y = i * (blockHeight + margin);
-     
-      if (i == rows - 1) {
-        fill(100, 150, 255);}
-     else if (specialCols.contains(j)) {
-        fill(255, 100, 100); 
-      } else {
-        fill(100, 150, 255); 
-      }
+  void display() {
+    int xOffset = (side == 0) ? 0 : width / 2;
+    float x = xOffset + col * cellW;
+    float y = row * cellH;
 
-      rect(x, y, blockWidth, blockHeight);
-    }
+    fill(isMoving ? color(255, 180, 0) : 120);
+    noStroke();
+    rect(x, y, cellW, cellH);
+  }
+
+  boolean isHit(Player p) {
+    return p.col == col && p.row == row && p.side == side;
   }
 }

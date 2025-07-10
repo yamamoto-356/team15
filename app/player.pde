@@ -1,7 +1,7 @@
 class Player {
   int col, row;
   int startCol, startRow;
-  int side; // 0 = 左画面, 1 = 右画面
+  int side;
   char leftKey, rightKey, upKey, downKey;
   int leftCode, rightCode, upCode, downCode;
 
@@ -31,13 +31,11 @@ class Player {
   }
 
   void update() {
-    // マスの境界チェック
     if (col < 0) col = 0;
     if (col >= colsPerPlayer) col = colsPerPlayer - 1;
     if (row < 0) row = 0;
     if (row > 19) row = 19;
 
-    // 静止チェック
     if (lastPos.x == col && lastPos.y == row) {
       staticFrame++;
       if (staticFrame > 120) {
@@ -58,7 +56,6 @@ class Player {
   }
 
   void display() {
-    // 実座標を算出
     int xOffset = (side == 0) ? 0 : width / 2;
     float x = xOffset + col * cellW + cellW / 2;
     float y = row * cellH + cellH / 2;

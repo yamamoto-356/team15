@@ -1,43 +1,84 @@
 int colsPerPlayer = 5;
-int cellW = 80; // = 400 / 5
+int cellW = 80;
 int cellH = 30;
 
 GameManager game;
+String gameState = "start";  // "start", "countdown", "play"
+
+int countdownTime = 3;
+int countdownStartMillis;
 
 void setup() {
   size(800, 600);
   game = new GameManager();
+  textAlign(CENTER, CENTER);
 }
 
 void draw() {
   background(255);
-  drawGrid();
-  game.update();
-  game.display();
+
+  if (gameState.equals("start")) {
+    drawStartScreen();
+  } else if (gameState.equals("countdown")) {
+    drawCountdown();
+  } else if (gameState.equals("play")) {
+    drawGrid();
+    game.update();
+    game.display();
+  }
 }
 
 void keyPressed() {
-  game.keyPressed(key, keyCode);
+  if (gameState.equals("start")) {
+    if (key == ' ' || key == ENTER) {
+      gameState = "countdown";
+      countdownStartMillis = millis();
+      countdownTime = 3;
+    }
+  } else if (gameState.equals("play")) {
+    game.keyPressed(key, keyCode);
+  }
 }
 
-// グリッド描画
 void drawGrid() {
   stroke(200);
-  // プレイヤー1（左）
   for (int i = 1; i < colsPerPlayer; i++) {
     line(i * cellW, 0, i * cellW, height);
   }
-  // プレイヤー2（右）
   for (int i = 1; i < colsPerPlayer; i++) {
     int x = 400 + i * cellW;
     line(x, 0, x, height);
   }
-  // 横線共通
   for (int j = 1; j < height / cellH; j++) {
     line(0, j * cellH, width, j * cellH);
   }
-
-  // 中央線
   stroke(0);
   line(width / 2, 0, width / 2, height);
+}
+
+void drawStartScreen() {
+  background(220);
+  fill(0);
+  textSize(32);
+  text("Press SPACE or ENTER to Start", width / 2, height / 2);
+}
+
+void drawCountdown() {
+  int elapsed = (millis() - countdownStartMillis) / 1000;
+  int displayNum = countdownTime - elapsed;
+
+  background(255);
+  textAlign(CENTER, CENTER);
+  fill(0);
+  textSize(72);
+
+  if (displayNum > 0) {
+    text(displayNum, width / 2, height / 2);
+  } else if (elapsed <= countdownTime + 1) {
+    text("Go!", width / 2, height / 2);
+  }
+
+  if (elapsed > countdownTime + 1) {
+    gameState = "play";
+  }
 }
