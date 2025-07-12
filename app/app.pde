@@ -10,6 +10,9 @@ PImage bakuhatsuImg;
 PImage treeImg;
 PImage carLeftImg,carRightImg;
 
+PImage heartMaxImg, heartHalfImg, heartEmptyImg;
+
+
 GameManager game;
 String gameState = "start";
 
@@ -33,6 +36,11 @@ void setup() {
   carLeftImg = loadImage("car-left.png");
   carRightImg = loadImage("car-right.png");
   
+  heartMaxImg = loadImage("heart_max.png");
+  heartHalfImg = loadImage("heart_half.png");
+  heartEmptyImg = loadImage("heart_empty.png");
+
+  
 
   game = new GameManager();
 }
@@ -48,8 +56,11 @@ void draw() {
     drawGrid();
     game.update();
     game.display();
+    drawHearts(game.player1, 10, 10);
+    drawHearts(game.player2, width - 100, 10);
   }
 }
+
 
 void keyPressed() {
   if (gameState.equals("start")) {
@@ -103,5 +114,20 @@ void drawCountdown() {
 
   if (elapsed > countdownTime + 1) {
     gameState = "play";
+  }
+}
+
+void drawHearts(Player p, int x, int y) {
+  float l = p.life;
+  for (int i = 0; i < 2; i++) {
+    if (l >= 1.0) {
+      image(heartMaxImg, x + i * 40, y, 32, 32);
+      l -= 1.0;
+    } else if (l >= 0.5) {
+      image(heartHalfImg, x + i * 40, y, 32, 32);
+      l -= 0.5;
+    } else {
+      image(heartEmptyImg, x + i * 40, y, 32, 32);
+    }
   }
 }

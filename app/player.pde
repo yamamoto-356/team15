@@ -2,6 +2,8 @@ class Player {
   int col, row;
   int startCol, startRow;
   int side;
+  
+  float life = 2.0;
 
   // 操作キーはcharかkeyCodeのどちらかで判定
   char leftKey, rightKey, upKey, downKey;
@@ -116,6 +118,7 @@ class Player {
   }
 
   void reset() {
+    life -= 1.0;
     col = startCol;
     row = startRow;
     isJumping = false;
@@ -128,5 +131,9 @@ class Player {
       isJumping = true;
       jumpVelocity = -4;  
     }
+  }
+  
+  boolean isDead(){
+    return life <= 0;
   }
 }

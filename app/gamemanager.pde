@@ -71,6 +71,17 @@ void setupGame() {
         explosions.add(new Explosion(ex, ey));
         player2.reset();
       }
+      
+      if (player1.isDead()) {
+        crownTaken = true;  // ゲーム終了状態として扱う
+        winner = 1;         // プレイヤー2の勝ち
+      }
+
+      if (player2.isDead()) {
+        crownTaken = true;
+        winner = 0;         // プレイヤー1の勝ち
+      }
+
     }
 
     checkCrown();
