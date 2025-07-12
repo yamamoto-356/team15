@@ -2,16 +2,29 @@ int colsPerPlayer = 5;
 int cellW = 80;
 int cellH = 30;
 
+PImage crownImg;
+PImage heroRedImg;
+PImage heroBlueImg;
+PImage dragonImg;
+PImage bakuhatsuImg;
+
 GameManager game;
-String gameState = "start";  // "start", "countdown", "play"
+String gameState = "start";
 
 int countdownTime = 3;
 int countdownStartMillis;
 
 void setup() {
   size(800, 600);
-  game = new GameManager();
   textAlign(CENTER, CENTER);
+
+  crownImg = loadImage("crown.png");
+  heroRedImg = loadImage("herored.png");
+  heroBlueImg = loadImage("heroblue.png");
+  dragonImg = loadImage("dragon.png");
+  bakuhatsuImg = loadImage("bakuhatsu.png");
+
+  game = new GameManager();
 }
 
 void draw() {
@@ -82,3 +95,5 @@ void drawCountdown() {
     gameState = "play";
   }
 }
+
+ArrayList<Explosion> explosions = new ArrayList<Explosion>();
