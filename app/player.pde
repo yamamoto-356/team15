@@ -12,6 +12,13 @@ class Player {
 
   boolean facingRight = true;
 
+  // ジャンプ用変数
+  boolean isJumping = false;
+  float jumpVelocity = 0;
+  float gravity = 0.5;
+  float baseY;          // Y座標の基本位置（行から計算）
+  float shakeOffsetY = 0; // 揺れのオフセット
+
   // charキー操作用コンストラクタ（a,d,w,s用）
   Player(int col, int row, char lk, char rk, char uk, char dk, int side, PImage imgRight, PImage imgLeft) {
     this.col = this.startCol = col;
@@ -41,6 +48,30 @@ class Player {
   void update() {
     col = constrain(col, 0, colsPerPlayer - 1);
     row = constrain(row, 0, 19);
+
+    float targetY = row * cellH;
+
+    if (isJumping) {
+      jumpVelocity += gravity;
+      baseY += jumpVelocity;
+
+      if (baseY >= targetY) {
+        baseY = targetY;
+        isJumping = false;
+        jumpVelocity = 0;
+
+        if (row > 0) {
+          row--;
+        }
+        shakeOffsetY = 0;
+      } else {
+        
+        shakeOffsetY = 1.5 * sin(millis() * 0.04);
+      }
+    } else {
+      baseY = targetY;
+      shakeOffsetY = 0;
+    }
   }
 
   void handleInput(char k, int kc) {
@@ -50,20 +81,23 @@ class Player {
     } else if (rightKey != 0 && k == rightKey) {
       col += 1;
       facingRight = true;
-    } else if (upKey != 0 && k == upKey) {
-      row -= 1;
-    } else if (downKey != 0 && k == downKey) {
+    }
+
+    // ジャンプ開始判定
+    if ((upKey != 0 && k == upKey) || (upKeyCode != -1 && kc == upKeyCode)) {
+      startJump();
+    }
+
+    if (downKey != 0 && k == downKey) {
       row += 1;
     }
-    // keyCode判定（矢印キー用）
-    else if (leftKeyCode != -1 && kc == leftKeyCode) {
+
+    if (leftKeyCode != -1 && kc == leftKeyCode) {
       col -= 1;
       facingRight = false;
     } else if (rightKeyCode != -1 && kc == rightKeyCode) {
       col += 1;
       facingRight = true;
-    } else if (upKeyCode != -1 && kc == upKeyCode) {
-      row -= 1;
     } else if (downKeyCode != -1 && kc == downKeyCode) {
       row += 1;
     }
@@ -72,7 +106,7 @@ class Player {
   void display() {
     int xOffset = (side == 0) ? 0 : width / 2;
     float x = xOffset + col * cellW;
-    float y = row * cellH;
+    float y = baseY + shakeOffsetY;
 
     if (facingRight) {
       image(imgRight, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
@@ -84,5 +118,15 @@ class Player {
   void reset() {
     col = startCol;
     row = startRow;
+    isJumping = false;
+    jumpVelocity = 0;
+    shakeOffsetY = 0;
+  }
+
+  void startJump() {
+    if (!isJumping) {
+      isJumping = true;
+      jumpVelocity = -4;  
+    }
   }
 }
