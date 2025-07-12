@@ -2,13 +2,18 @@ class Player {
   int col, row;
   int startCol, startRow;
   int side;
+
+  // 操作キーはcharかkeyCodeのどちらかで判定
   char leftKey, rightKey, upKey, downKey;
-  int leftCode, rightCode, upCode, downCode;
+  int leftKeyCode = -1, rightKeyCode = -1, upKeyCode = -1, downKeyCode = -1;
 
-  int staticFrame = 0;
-  PVector lastPos;
+  PImage imgRight;
+  PImage imgLeft;
 
-  Player(int col, int row, char lk, char rk, char uk, char dk, int side) {
+  boolean facingRight = true;
+
+  // charキー操作用コンストラクタ（a,d,w,s用）
+  Player(int col, int row, char lk, char rk, char uk, char dk, int side, PImage imgRight, PImage imgLeft) {
     this.col = this.startCol = col;
     this.row = this.startRow = row;
     this.leftKey = lk;
@@ -16,52 +21,64 @@ class Player {
     this.upKey = uk;
     this.downKey = dk;
     this.side = side;
-    lastPos = new PVector(col, row);
+    this.imgRight = imgRight;
+    this.imgLeft = imgLeft;
   }
 
-  Player(int col, int row, int lk, int rk, int uk, int dk, int side) {
+  // keyCode用コンストラクタ（矢印キー用）
+  Player(int col, int row, int lkCode, int rkCode, int ukCode, int dkCode, int side, PImage imgRight, PImage imgLeft) {
     this.col = this.startCol = col;
     this.row = this.startRow = row;
-    this.leftCode = lk;
-    this.rightCode = rk;
-    this.upCode = uk;
-    this.downCode = dk;
+    this.leftKeyCode = lkCode;
+    this.rightKeyCode = rkCode;
+    this.upKeyCode = ukCode;
+    this.downKeyCode = dkCode;
     this.side = side;
-    lastPos = new PVector(col, row);
+    this.imgRight = imgRight;
+    this.imgLeft = imgLeft;
   }
 
   void update() {
-    if (col < 0) col = 0;
-    if (col >= colsPerPlayer) col = colsPerPlayer - 1;
-    if (row < 0) row = 0;
-    if (row > 19) row = 19;
-
-    if (lastPos.x == col && lastPos.y == row) {
-      staticFrame++;
-      if (staticFrame > 120) {
-        row += 1;
-        staticFrame = 0;
-      }
-    } else {
-      staticFrame = 0;
-      lastPos.set(col, row);
-    }
+    col = constrain(col, 0, colsPerPlayer - 1);
+    row = constrain(row, 0, 19);
   }
 
   void handleInput(char k, int kc) {
-    if (k == leftKey || kc == leftCode) col -= 1;
-    if (k == rightKey || kc == rightCode) col += 1;
-    if (k == upKey || kc == upCode) row -= 1;
-    if (k == downKey || kc == downCode) row += 1;
+    if (leftKey != 0 && k == leftKey) {
+      col -= 1;
+      facingRight = false;
+    } else if (rightKey != 0 && k == rightKey) {
+      col += 1;
+      facingRight = true;
+    } else if (upKey != 0 && k == upKey) {
+      row -= 1;
+    } else if (downKey != 0 && k == downKey) {
+      row += 1;
+    }
+    // keyCode判定（矢印キー用）
+    else if (leftKeyCode != -1 && kc == leftKeyCode) {
+      col -= 1;
+      facingRight = false;
+    } else if (rightKeyCode != -1 && kc == rightKeyCode) {
+      col += 1;
+      facingRight = true;
+    } else if (upKeyCode != -1 && kc == upKeyCode) {
+      row -= 1;
+    } else if (downKeyCode != -1 && kc == downKeyCode) {
+      row += 1;
+    }
   }
 
   void display() {
     int xOffset = (side == 0) ? 0 : width / 2;
-    float x = xOffset + col * cellW + cellW / 2;
-    float y = row * cellH + cellH / 2;
+    float x = xOffset + col * cellW;
+    float y = row * cellH;
 
-    fill(side == 0 ? color(100, 150, 255) : color(255, 120, 120));
-    ellipse(x, y, cellW * 0.6, cellH * 0.8);
+    if (facingRight) {
+      image(imgRight, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+    } else {
+      image(imgLeft, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+    }
   }
 
   void reset() {

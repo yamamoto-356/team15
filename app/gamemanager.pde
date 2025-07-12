@@ -6,15 +6,26 @@ class GameManager {
   int crownColLeft;
   int crownColRight;
   boolean crownTaken = false;
-  int winner = -1;  // 0=player1,1=player2,-1=なし
+  int winner = -1;
 
   GameManager() {
     int row = 19;
     int p1col = (int)random(0, colsPerPlayer);
     int p2col = (int)random(0, colsPerPlayer);
 
-    player1 = new Player(p1col, row, 'a', 'd', 'w', 's', 0);
-    player2 = new Player(p2col, row, LEFT, RIGHT, UP, DOWN, 1);
+    // プレイヤー1は a,d,w,s キー操作
+    player1 = new Player(
+      p1col, row,
+      'a', 'd', 'w', 's',
+      0, player1RightImg, player1LeftImg
+    );
+
+    // プレイヤー2は矢印キー操作（keyCode）
+    player2 = new Player(
+      p2col, row,
+      LEFT, RIGHT, UP, DOWN,
+      1, player2RightImg, player2LeftImg
+    );
 
     blocks = new ArrayList<Block>();
 
@@ -25,12 +36,8 @@ class GameManager {
       Block bLeft = new Block(colLeft, rowIndex, 0);
       Block bRight = new Block(colRight, rowIndex, 1);
 
-      if (random(1) < 0.2) {
-        bLeft.setMoving(true);
-      }
-      if (random(1) < 0.2) {
-        bRight.setMoving(true);
-      }
+      if (random(1) < 0.2) bLeft.setMoving(true);
+      if (random(1) < 0.2) bRight.setMoving(true);
 
       blocks.add(bLeft);
       blocks.add(bRight);
@@ -50,16 +57,32 @@ class GameManager {
       b.update();
 
       if (b.isHit(player1)) {
-        println("Player1 hit a block!");
+        int xOffset = (b.side == 0) ? 0 : width / 2;
+        float ex = xOffset + b.col * cellW;
+        float ey = b.row * cellH;
+        explosions.add(new Explosion(ex, ey));
+
         player1.reset();
       }
+
       if (b.isHit(player2)) {
-        println("Player2 hit a block!");
+        int xOffset = (b.side == 0) ? 0 : width / 2;
+        float ex = xOffset + b.col * cellW;
+        float ey = b.row * cellH;
+        explosions.add(new Explosion(ex, ey));
+
         player2.reset();
       }
     }
 
     checkCrown();
+
+    for (int i = explosions.size() - 1; i >= 0; i--) {
+      explosions.get(i).update();
+      if (explosions.get(i).isFinished()) {
+        explosions.remove(i);
+      }
+    }
   }
 
   void checkCrown() {
@@ -74,15 +97,16 @@ class GameManager {
   }
 
   void display() {
-    for (Block b : blocks) {
-      b.display();
-    }
+    for (Block b : blocks) b.display();
 
-    // 王冠をテキストで表示（画像なし版）
-    drawCrownText();
+    drawCrownImage();
 
     player1.display();
     player2.display();
+
+    for (Explosion e : explosions) {
+      e.display();
+    }
 
     if (crownTaken) {
       fill(0);
@@ -93,16 +117,14 @@ class GameManager {
     }
   }
 
-  void drawCrownText() {
-    int yTop = cellH / 2;
-    int xLeft = crownColLeft * cellW + cellW / 2;
-    int xRight = width / 2 + crownColRight * cellW + cellW / 2;
-
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    fill(255, 215, 0);  // ゴールドカラー
-    text("👑", xLeft, yTop);
-    text("👑", xRight, yTop);
+  void drawCrownImage() {
+    float crownW = cellW * 0.8;
+    float crownH = cellH * 0.8;
+    float xLeft = crownColLeft * cellW + (cellW - crownW) / 2;
+    float xRight = width / 2 + crownColRight * cellW + (cellW - crownW) / 2;
+    float yTop = (cellH - crownH) / 2;
+    image(crownImg, xLeft, yTop, crownW, crownH);
+    image(crownImg, xRight, yTop, crownW, crownH);
   }
 
   void keyPressed(char k, int kc) {

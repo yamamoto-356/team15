@@ -1,20 +1,24 @@
 class Block {
   int col, row;
   int side;
-
-  boolean isMoving;    // 動くかどうか
-  int moveDir = 1;     // 1 = 右, -1 = 左
-  int moveCooldown = 0; // 移動タイミング用カウンタ
+  boolean isMoving;
+  int moveDir = 1;
+  int moveCooldown = 0;
 
   Block(int col, int row, int side) {
     this.col = col;
     this.row = row;
     this.side = side;
     this.isMoving = false;
+    moveDir = 1;
+    moveCooldown = 0;
   }
 
   void setMoving(boolean moving) {
-    isMoving = moving;
+    this.isMoving = moving;
+    if (moving) {
+      moveCooldown = 30;
+    }
   }
 
   void update() {
@@ -27,7 +31,7 @@ class Block {
           nextCol = col + moveDir;
         }
         col = nextCol;
-        moveCooldown = 30; // 動く間隔（フレーム数）
+        moveCooldown = 30;
       }
     }
   }
@@ -37,9 +41,13 @@ class Block {
     float x = xOffset + col * cellW;
     float y = row * cellH;
 
-    fill(isMoving ? color(255, 180, 0) : 120);
-    noStroke();
-    rect(x, y, cellW, cellH);
+    if (isMoving && dragonImg != null) {
+      image(dragonImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+    } else {
+      fill(120);
+      noStroke();
+      rect(x, y, cellW, cellH);
+    }
   }
 
   boolean isHit(Player p) {

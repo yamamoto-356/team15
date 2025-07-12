@@ -1,11 +1,11 @@
 class Explosion {
   float x, y;
-  int timer;  // 表示時間フレーム数
+  int timer;
 
   Explosion(float x, float y) {
     this.x = x;
     this.y = y;
-    this.timer = 30;  // 30フレーム＝約0.5秒（60fpsの場合）
+    this.timer = 30;
   }
 
   void update() {
