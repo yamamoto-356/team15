@@ -43,14 +43,11 @@ class Block {
 
     if (isMoving && dragonImg != null) {
       image(dragonImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+    } else if (!isMoving && treeImg != null) {
+      image(treeImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
     } else {
       fill(120);
       noStroke();
       rect(x, y, cellW, cellH);
     }
-  }
-
-  boolean isHit(Player p) {
-    return p.col == col && p.row == row && p.side == side;
-  }
 }

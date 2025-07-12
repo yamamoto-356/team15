@@ -7,6 +7,7 @@ PImage player1RightImg, player1LeftImg;
 PImage player2RightImg, player2LeftImg;
 PImage dragonImg;
 PImage bakuhatsuImg;
+PImage treeImg;
 
 GameManager game;
 String gameState = "start";
@@ -27,6 +28,7 @@ void setup() {
   player2LeftImg = loadImage("player2-left.png");
   dragonImg = loadImage("dragon.png");
   bakuhatsuImg = loadImage("bakuhatsu.png");
+  treeImg = loadImage("tree.png");
 
   game = new GameManager();
 }
