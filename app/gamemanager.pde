@@ -12,53 +12,40 @@ class GameManager {
     setupGame();
   }
 
-  void setupGame() {
-    int row = 19;
-    int p1col = (int)random(0, colsPerPlayer);
-    int p2col = (int)random(0, colsPerPlayer);
+void setupGame() {
+  int row = 19;
+  int p1col = (int)random(0, colsPerPlayer);
+  int p2col = (int)random(0, colsPerPlayer);
 
-    // プレイヤー1は a,d,w,s キー操作
-    player1 = new Player(
-      p1col, row,
-      'a', 'd', 'w', 's',
-      0, player1RightImg, player1LeftImg
-    );
+  player1 = new Player(p1col, row, 'a', 'd', 'w', 's', 0, player1RightImg, player1LeftImg);
+  player2 = new Player(p2col, row, LEFT, RIGHT, UP, DOWN, 1, player2RightImg, player2LeftImg);
 
-    // プレイヤー2は矢印キー操作（keyCode）
-    player2 = new Player(
-      p2col, row,
-      LEFT, RIGHT, UP, DOWN,
-      1, player2RightImg, player2LeftImg
-    );
+  crownColLeft = (int)random(0, colsPerPlayer);
+  crownColRight = (int)random(0, colsPerPlayer);
 
-    blocks = new ArrayList<Block>();
-    for (int rowIndex = 0; rowIndex < 19; rowIndex++) {
-      int colLeft = (int)random(0, colsPerPlayer);
-      int colRight = (int)random(0, colsPerPlayer);
-      
-    if (rowIndex == 0 && colLeft == crownColLeft) {
-      colLeft = (colLeft + 1) % colsPerPlayer;
-    }
-    if (rowIndex == 0 && colRight == crownColRight) {
-      colRight = (colRight + 1) % colsPerPlayer;
-    }
+  blocks = new ArrayList<Block>();
+  for (int rowIndex = 0; rowIndex < 19; rowIndex++) {
+    int colLeft = (int)random(0, colsPerPlayer);
+    int colRight = (int)random(0, colsPerPlayer);
 
-      Block bLeft = new Block(colLeft, rowIndex, 0);
-      Block bRight = new Block(colRight, rowIndex, 1);
+    // 王冠の位置とかぶる場合はスキップ
+    if (rowIndex == 0 && colLeft == crownColLeft) continue;
+    if (rowIndex == 0 && colRight == crownColRight) continue;
 
-      if (random(1) < 0.2) bLeft.setMoving(true);
-      if (random(1) < 0.2) bRight.setMoving(true);
+    Block bLeft = new Block(colLeft, rowIndex, 0);
+    Block bRight = new Block(colRight, rowIndex, 1);
 
-      blocks.add(bLeft);
-      blocks.add(bRight);
-    }
+    if (random(1) < 0.2) bLeft.setMoving(true);
+    if (random(1) < 0.2) bRight.setMoving(true);
 
-    crownColLeft = (int)random(0, colsPerPlayer);
-    crownColRight = (int)random(0, colsPerPlayer);
-
-    crownTaken = false;
-    winner = -1;
+    blocks.add(bLeft);
+    blocks.add(bRight);
   }
+
+  crownTaken = false;
+  winner = -1;
+}
+
 
   void update() {
     if (crownTaken) return;
