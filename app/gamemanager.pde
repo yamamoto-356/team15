@@ -9,6 +9,10 @@ class GameManager {
   int winner = -1;
 
   GameManager() {
+    setupGame();
+  }
+
+  void setupGame() {
     int row = 19;
     int p1col = (int)random(0, colsPerPlayer);
     int p2col = (int)random(0, colsPerPlayer);
@@ -28,10 +32,16 @@ class GameManager {
     );
 
     blocks = new ArrayList<Block>();
-
     for (int rowIndex = 0; rowIndex < 19; rowIndex++) {
       int colLeft = (int)random(0, colsPerPlayer);
       int colRight = (int)random(0, colsPerPlayer);
+      
+    if (rowIndex == 0 && colLeft == crownColLeft) {
+      colLeft = (colLeft + 1) % colsPerPlayer;
+    }
+    if (rowIndex == 0 && colRight == crownColRight) {
+      colRight = (colRight + 1) % colsPerPlayer;
+    }
 
       Block bLeft = new Block(colLeft, rowIndex, 0);
       Block bRight = new Block(colRight, rowIndex, 1);
@@ -45,6 +55,9 @@ class GameManager {
 
     crownColLeft = (int)random(0, colsPerPlayer);
     crownColRight = (int)random(0, colsPerPlayer);
+
+    crownTaken = false;
+    winner = -1;
   }
 
   void update() {
@@ -61,7 +74,6 @@ class GameManager {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
-
         player1.reset();
       }
 
@@ -70,7 +82,6 @@ class GameManager {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
-
         player2.reset();
       }
     }
@@ -98,9 +109,7 @@ class GameManager {
 
   void display() {
     for (Block b : blocks) b.display();
-
     drawCrownImage();
-
     player1.display();
     player2.display();
 
@@ -114,6 +123,8 @@ class GameManager {
       textAlign(CENTER, CENTER);
       String msg = (winner == 0) ? "Player 1 Wins!" : "Player 2 Wins!";
       text(msg, width / 2, height / 2);
+      textSize(24);
+      text("Press R to Restart", width / 2, height / 2 + 50);
     }
   }
 
@@ -131,6 +142,10 @@ class GameManager {
     if (!crownTaken) {
       player1.handleInput(k, kc);
       player2.handleInput(k, kc);
+    } else if (k == 'r' || k == 'R') {
+      // ゲームをリセット
+      explosions.clear();
+      setupGame();
     }
   }
 }
