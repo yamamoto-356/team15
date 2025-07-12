@@ -5,9 +5,10 @@ int cellH = 30;
 PImage crownImg;
 PImage player1RightImg, player1LeftImg;
 PImage player2RightImg, player2LeftImg;
-PImage dragonImg;
+
 PImage bakuhatsuImg;
 PImage treeImg;
+PImage carLeftImg,carRightImg;
 
 GameManager game;
 String gameState = "start";
@@ -26,9 +27,12 @@ void setup() {
   player1LeftImg = loadImage("player1-left.png");
   player2RightImg = loadImage("player2-right.png");
   player2LeftImg = loadImage("player2-left.png");
-  dragonImg = loadImage("dragon.png");
+
   bakuhatsuImg = loadImage("bakuhatsu.png");
   treeImg = loadImage("tree.png");
+  carLeftImg = loadImage("car-left.png");
+  carRightImg = loadImage("car-right.png");
+  
 
   game = new GameManager();
 }
