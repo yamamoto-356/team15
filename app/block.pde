@@ -17,7 +17,7 @@ class Block {
   void setMoving(boolean moving) {
     this.isMoving = moving;
     if (moving) {
-      moveCooldown = 30;
+      moveCooldown = 18;
     }
   }
 
@@ -31,7 +31,7 @@ class Block {
           nextCol = col + moveDir;
         }
         col = nextCol;
-        moveCooldown = 30;
+        moveCooldown = 18;
       }
     }
   }
