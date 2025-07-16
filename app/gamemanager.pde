@@ -88,7 +88,13 @@ void setupGame() {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
-        hitSound.play();
+        
+        if (b.isMoving) {
+          hitSound.play();
+        }else{
+          treeSound.play();
+        }
+        
         player1.reset();
       }
 
@@ -97,7 +103,13 @@ void setupGame() {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
-        hitSound.play();
+        
+        if(b.isMoving) {
+          hitSound.play();
+        }else {
+          treeSound.play();
+        }
+        
         player2.reset();
       }
       
@@ -124,11 +136,17 @@ void setupGame() {
     
 for (Heart h : hearts) {
   if (h.isHit(player1)) {
-    if (player1.life < 2.0) player1.life = min(player1.life + 1.0, 2.0);  // 1.0回復に変更
+    if (player1.life < 2.0) {
+      player1.life = min(player1.life + 1.0, 2.0);  // 1.0回復に変更
+      healSound.play();
+    }
     h.collected = true;
   }
   if (h.isHit(player2)) {
-    if (player2.life < 2.0) player2.life = min(player2.life + 1.0, 2.0);  // 1.0回復に変更
+    if (player2.life < 2.0) {
+      player2.life = min(player2.life + 1.0, 2.0);  // 1.0回復に変更
+      healSound.play();
+    }
     h.collected = true;
   }
 }

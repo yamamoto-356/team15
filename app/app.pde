@@ -6,6 +6,8 @@ import processing.sound.*;
 
 SoundFile hitSound;
 SoundFile goalSound;
+SoundFile healSound;
+SoundFile treeSound;
 
 PImage crownImg;
 PImage player1RightImg, player1LeftImg;
@@ -47,6 +49,8 @@ void setup() {
   
   hitSound = new SoundFile(this, "爆発1.mp3");
   goalSound = new SoundFile(this, "goal.mp3");
+  treeSound = new SoundFile(this, "treesound.mp3");
+  healSound = new SoundFile(this, "heal.mp3");
 
   
 
