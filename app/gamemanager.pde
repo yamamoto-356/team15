@@ -116,7 +116,7 @@ void setupGame() {
     }
 
     if (crownTaken) {
-      fill(0);
+      fill(255);
       textSize(48);
       textAlign(CENTER, CENTER);
       String msg = (winner == 0) ? "Player 1 Wins!" : "Player 2 Wins!";
