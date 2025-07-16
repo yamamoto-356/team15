@@ -2,6 +2,11 @@ int colsPerPlayer = 5;
 int cellW = 80;
 int cellH = 30;
 
+import processing.sound.*;
+
+SoundFile hitSound;
+SoundFile goalSound;
+
 PImage crownImg;
 PImage player1RightImg, player1LeftImg;
 PImage player2RightImg, player2LeftImg;
@@ -39,6 +44,9 @@ void setup() {
   heartMaxImg = loadImage("heart_max.png");
   heartHalfImg = loadImage("heart_half.png");
   heartEmptyImg = loadImage("heart_empty.png");
+  
+  hitSound = new SoundFile(this, "爆発1.mp3");
+  goalSound = new SoundFile(this, "goal.mp3");
 
   
 

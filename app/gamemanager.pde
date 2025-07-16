@@ -61,6 +61,7 @@ void setupGame() {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
+        hitSound.play();
         player1.reset();
       }
 
@@ -69,6 +70,7 @@ void setupGame() {
         float ex = xOffset + b.col * cellW;
         float ey = b.row * cellH;
         explosions.add(new Explosion(ex, ey));
+        hitSound.play();
         player2.reset();
       }
       
@@ -98,10 +100,12 @@ void setupGame() {
     if (player1.side == 0 && player1.row == 0 && player1.col == crownColLeft) {
       crownTaken = true;
       winner = 0;
+      goalSound.play();
     }
     if (player2.side == 1 && player2.row == 0 && player2.col == crownColRight) {
       crownTaken = true;
       winner = 1;
+      goalSound.play();
     }
   }
 
