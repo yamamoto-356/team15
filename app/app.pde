@@ -46,7 +46,7 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  background(80,42,42);
 
   if (gameState.equals("start")) {
     drawStartScreen();
@@ -86,8 +86,10 @@ void drawGrid() {
   for (int j = 1; j < height / cellH; j++) {
     line(0, j * cellH, width, j * cellH);
   }
-  stroke(0);
+  stroke(255);
+  strokeWeight(5);
   line(width / 2, 0, width / 2, height);
+  strokeWeight(1);
 }
 
 void drawStartScreen() {
