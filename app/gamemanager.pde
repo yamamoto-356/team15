@@ -119,7 +119,7 @@ void setupGame() {
       fill(255);
       textSize(48);
       textAlign(CENTER, CENTER);
-      String msg = (winner == 0) ? "Player 1 Wins!" : "Player 2 Wins!";
+      String msg = (winner == 0) ? "Player 1 Wins!!" : "Player 2 Wins!!";
       text(msg, width / 2, height / 2);
       textSize(24);
       text("Press R to Restart", width / 2, height / 2 + 50);
