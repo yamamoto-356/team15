@@ -35,8 +35,8 @@ void setupGame() {
     Block bLeft = new Block(colLeft, rowIndex, 0);
     Block bRight = new Block(colRight, rowIndex, 1);
 
-    if (random(1) < 0.4) bLeft.setMoving(true);
-    if (random(1) < 0.4) bRight.setMoving(true);
+    if (random(1) < 0.3) bLeft.setMoving(true);
+    if (random(1) < 0.3) bRight.setMoving(true);
 
     blocks.add(bLeft);
     blocks.add(bRight);
