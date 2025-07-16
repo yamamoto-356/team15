@@ -2,6 +2,7 @@ class GameManager {
   Player player1;
   Player player2;
   ArrayList<Block> blocks;
+  ArrayList<Heart> hearts;
 
   int crownColLeft;
   int crownColRight;
@@ -24,13 +25,12 @@ void setupGame() {
   crownColRight = (int)random(0, colsPerPlayer);
 
   blocks = new ArrayList<Block>();
-  for (int rowIndex = 0; rowIndex < 19; rowIndex++) {
+  for (int rowIndex = 1; rowIndex < 19; rowIndex++) {
+    // 王冠の行（0行目）には障害物を出さない
+    if (rowIndex == 0) continue;
+
     int colLeft = (int)random(0, colsPerPlayer);
     int colRight = (int)random(0, colsPerPlayer);
-
-    // 王冠の位置とかぶる場合はスキップ
-    if (rowIndex == 0 && colLeft == crownColLeft) continue;
-    if (rowIndex == 0 && colRight == crownColRight) continue;
 
     Block bLeft = new Block(colLeft, rowIndex, 0);
     Block bRight = new Block(colRight, rowIndex, 1);
@@ -44,6 +44,33 @@ void setupGame() {
 
   crownTaken = false;
   winner = -1;
+
+  hearts = new ArrayList<Heart>();
+
+  int heartCount = 4; // 両サイドで2個ずつ配置
+
+  for (int i = 0; i < heartCount; i++) {
+    int side = i < 2 ? 0 : 1;
+    int col, heartRow;
+
+    // 衝突を避けるために位置決めを繰り返す
+    while (true) {
+      col = (int)random(0, colsPerPlayer);
+      heartRow = (int)random(1, 18); // 0行目と19行目は除く
+
+      // blocksに重なっていないか判定
+      boolean conflict = false;
+      for (Block b : blocks) {
+        if (b.side == side && b.col == col && b.row == heartRow) {
+          conflict = true;
+          break;
+        }
+      }
+      if (!conflict) break; // 衝突なしならループを抜ける
+    }
+
+    hearts.add(new Heart(col, heartRow, side));
+  }
 }
 
 
@@ -94,6 +121,19 @@ void setupGame() {
         explosions.remove(i);
       }
     }
+    
+for (Heart h : hearts) {
+  if (h.isHit(player1)) {
+    if (player1.life < 2.0) player1.life = min(player1.life + 1.0, 2.0);  // 1.0回復に変更
+    h.collected = true;
+  }
+  if (h.isHit(player2)) {
+    if (player2.life < 2.0) player2.life = min(player2.life + 1.0, 2.0);  // 1.0回復に変更
+    h.collected = true;
+  }
+}
+
+
   }
 
   void checkCrown() {
@@ -110,6 +150,9 @@ void setupGame() {
   }
 
   void display() {
+    
+    for (Heart h : hearts) h.display();
+
     for (Block b : blocks) b.display();
     drawCrownImage();
     player1.display();

@@ -128,14 +128,10 @@ void drawCountdown() {
 }
 
 void drawHearts(Player p, int x, int y) {
-  float l = p.life;
+  int fullHearts = (int) p.life;  // lifeを整数化（1か2）
   for (int i = 0; i < 2; i++) {
-    if (l >= 1.0) {
+    if (i < fullHearts) {
       image(heartMaxImg, x + i * 40, y, 32, 32);
-      l -= 1.0;
-    } else if (l >= 0.5) {
-      image(heartHalfImg, x + i * 40, y, 32, 32);
-      l -= 0.5;
     } else {
       image(heartEmptyImg, x + i * 40, y, 32, 32);
     }
