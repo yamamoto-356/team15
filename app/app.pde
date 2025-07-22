@@ -19,6 +19,8 @@ PImage carLeftImg,carRightImg;
 
 PImage heartMaxImg, heartHalfImg, heartEmptyImg;
 
+PImage alienImg;
+
 
 GameManager game;
 String gameState = "start";
@@ -46,6 +48,8 @@ void setup() {
   heartMaxImg = loadImage("heart_max.png");
   heartHalfImg = loadImage("heart_half.png");
   heartEmptyImg = loadImage("heart_empty.png");
+  
+  alienImg = loadImage("alien.png");
   
   hitSound = new SoundFile(this, "爆発1.mp3");
   goalSound = new SoundFile(this, "goal.mp3");

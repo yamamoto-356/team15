@@ -1,3 +1,4 @@
+
 class Heart {
   int col, row;
   int side;

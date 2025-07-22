@@ -2,8 +2,11 @@ class Player {
   int col, row;
   int startCol, startRow;
   int side;
-  
+
   float life = 2.0;
+
+  boolean isReversed = false;
+  int reverseEndTime = 0;
 
   // 操作キーはcharかkeyCodeのどちらかで判定
   char leftKey, rightKey, upKey, downKey;
@@ -48,6 +51,10 @@ class Player {
   }
 
   void update() {
+    if (isReversed && millis() > reverseEndTime) {
+      isReversed = false;
+    }
+
     col = constrain(col, 0, colsPerPlayer - 1);
     row = constrain(row, 0, 19);
 
@@ -67,7 +74,6 @@ class Player {
         }
         shakeOffsetY = 0;
       } else {
-        
         shakeOffsetY = 1.5 * sin(millis() * 0.04);
       }
     } else {
@@ -77,31 +83,64 @@ class Player {
   }
 
   void handleInput(char k, int kc) {
-    if (leftKey != 0 && k == leftKey) {
-      col -= 1;
-      facingRight = false;
-    } else if (rightKey != 0 && k == rightKey) {
-      col += 1;
-      facingRight = true;
-    }
+    if (isReversed) {
+      // 反転操作
 
-    // ジャンプ開始判定
-    if ((upKey != 0 && k == upKey) || (upKeyCode != -1 && kc == upKeyCode)) {
-      startJump();
-    }
+      if (leftKey != 0 && k == leftKey) {
+        col += 1;  // 反転で右に移動
+        facingRight = true;
+      } else if (rightKey != 0 && k == rightKey) {
+        col -= 1;  // 反転で左に移動
+        facingRight = false;
+      }
 
-    if (downKey != 0 && k == downKey) {
-      row += 1;
-    }
+      // 上下反転
+      if ((upKey != 0 && k == upKey) || (upKeyCode != -1 && kc == upKeyCode)) {
+        row += 1;  // 反転で下に移動
+      }
 
-    if (leftKeyCode != -1 && kc == leftKeyCode) {
-      col -= 1;
-      facingRight = false;
-    } else if (rightKeyCode != -1 && kc == rightKeyCode) {
-      col += 1;
-      facingRight = true;
-    } else if (downKeyCode != -1 && kc == downKeyCode) {
-      row += 1;
+      if (downKey != 0 && k == downKey) {
+        startJump();  // ジャンプは反転しない場合
+      }
+
+      if (leftKeyCode != -1 && kc == leftKeyCode) {
+        col += 1;
+        facingRight = true;
+      } else if (rightKeyCode != -1 && kc == rightKeyCode) {
+        col -= 1;
+        facingRight = false;
+      } else if (downKeyCode != -1 && kc == downKeyCode) {
+        startJump();
+      }
+
+    } else {
+      // 通常操作
+
+      if (leftKey != 0 && k == leftKey) {
+        col -= 1;
+        facingRight = false;
+      } else if (rightKey != 0 && k == rightKey) {
+        col += 1;
+        facingRight = true;
+      }
+
+      if ((upKey != 0 && k == upKey) || (upKeyCode != -1 && kc == upKeyCode)) {
+        startJump();
+      }
+
+      if (downKey != 0 && k == downKey) {
+        row += 1;
+      }
+
+      if (leftKeyCode != -1 && kc == leftKeyCode) {
+        col -= 1;
+        facingRight = false;
+      } else if (rightKeyCode != -1 && kc == rightKeyCode) {
+        col += 1;
+        facingRight = true;
+      } else if (downKeyCode != -1 && kc == downKeyCode) {
+        row += 1;
+      }
     }
   }
 
@@ -129,11 +168,11 @@ class Player {
   void startJump() {
     if (!isJumping) {
       isJumping = true;
-      jumpVelocity = -4;  
+      jumpVelocity = -4;
     }
   }
-  
-  boolean isDead(){
+
+  boolean isDead() {
     return life <= 0;
   }
 }

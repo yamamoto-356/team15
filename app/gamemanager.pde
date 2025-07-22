@@ -17,6 +17,8 @@ void setupGame() {
   int row = 19;
   int p1col = (int)random(0, colsPerPlayer);
   int p2col = (int)random(0, colsPerPlayer);
+  
+
 
   player1 = new Player(p1col, row, 'a', 'd', 'w', 's', 0, player1RightImg, player1LeftImg);
   player2 = new Player(p2col, row, LEFT, RIGHT, UP, DOWN, 1, player2RightImg, player2LeftImg);
@@ -37,6 +39,9 @@ void setupGame() {
 
     if (random(1) < 0.3) bLeft.setMoving(true);
     if (random(1) < 0.3) bRight.setMoving(true);
+    
+    if (random(1) < 0.1 && bLeft.isMoving) bLeft.isReverseBlock = true;
+    if (random(1) < 0.1 && bRight.isMoving) bRight.isReverseBlock = true;
 
     blocks.add(bLeft);
     blocks.add(bRight);
@@ -74,85 +79,92 @@ void setupGame() {
 }
 
 
-  void update() {
-    if (crownTaken) return;
+void update() {
+  if (crownTaken) return;
 
-    player1.update();
-    player2.update();
+  player1.update();
+  player2.update();
 
-    for (Block b : blocks) {
-      b.update();
+  for (Block b : blocks) {
+    b.update();
 
-      if (b.isHit(player1)) {
-        int xOffset = (b.side == 0) ? 0 : width / 2;
-        float ex = xOffset + b.col * cellW;
-        float ey = b.row * cellH;
-        explosions.add(new Explosion(ex, ey));
-        
-        if (b.isMoving) {
-          hitSound.play();
-        }else{
-          treeSound.play();
-        }
-        
-        player1.reset();
+    if (b.isHit(player1)) {
+      if (b.isReverseBlock) {
+        player1.isReversed = true;
+        player1.reverseEndTime = millis() + 5000;
       }
 
-      if (b.isHit(player2)) {
-        int xOffset = (b.side == 0) ? 0 : width / 2;
-        float ex = xOffset + b.col * cellW;
-        float ey = b.row * cellH;
-        explosions.add(new Explosion(ex, ey));
-        
-        if(b.isMoving) {
-          hitSound.play();
-        }else {
-          treeSound.play();
-        }
-        
-        player2.reset();
-      }
-      
-      if (player1.isDead()) {
-        crownTaken = true;  // ゲーム終了状態として扱う
-        winner = 1;         // プレイヤー2の勝ち
+      int xOffset = (b.side == 0) ? 0 : width / 2;
+      float ex = xOffset + b.col * cellW;
+      float ey = b.row * cellH;
+      explosions.add(new Explosion(ex, ey));
+
+      if (b.isMoving) {
+        hitSound.play();
+      } else {
+        treeSound.play();
       }
 
-      if (player2.isDead()) {
-        crownTaken = true;
-        winner = 0;         // プレイヤー1の勝ち
-      }
-
+      player1.reset();
     }
 
-    checkCrown();
-
-    for (int i = explosions.size() - 1; i >= 0; i--) {
-      explosions.get(i).update();
-      if (explosions.get(i).isFinished()) {
-        explosions.remove(i);
+    if (b.isHit(player2)) {
+      if (b.isReverseBlock) {
+        player2.isReversed = true;
+        player2.reverseEndTime = millis() + 5000;
       }
+
+      int xOffset = (b.side == 0) ? 0 : width / 2;
+      float ex = xOffset + b.col * cellW;
+      float ey = b.row * cellH;
+      explosions.add(new Explosion(ex, ey));
+
+      if (b.isMoving) {
+        hitSound.play();
+      } else {
+        treeSound.play();
+      }
+
+      player2.reset();
     }
-    
-for (Heart h : hearts) {
-  if (h.isHit(player1)) {
-    if (player1.life < 2.0) {
-      player1.life = min(player1.life + 1.0, 2.0);  // 1.0回復に変更
-      healSound.play();
+
+    if (player1.isDead()) {
+      crownTaken = true;
+      winner = 1;
     }
-    h.collected = true;
+    if (player2.isDead()) {
+      crownTaken = true;
+      winner = 0;
+    }
   }
-  if (h.isHit(player2)) {
-    if (player2.life < 2.0) {
-      player2.life = min(player2.life + 1.0, 2.0);  // 1.0回復に変更
-      healSound.play();
+
+  checkCrown();
+
+  for (int i = explosions.size() - 1; i >= 0; i--) {
+    explosions.get(i).update();
+    if (explosions.get(i).isFinished()) {
+      explosions.remove(i);
     }
-    h.collected = true;
+  }
+
+  for (Heart h : hearts) {
+    if (h.isHit(player1)) {
+      if (player1.life < 2.0) {
+        player1.life = min(player1.life + 1.0, 2.0);
+        healSound.play();
+      }
+      h.collected = true;
+    }
+    if (h.isHit(player2)) {
+      if (player2.life < 2.0) {
+        player2.life = min(player2.life + 1.0, 2.0);
+        healSound.play();
+      }
+      h.collected = true;
+    }
   }
 }
 
-
-  }
 
   void checkCrown() {
     if (player1.side == 0 && player1.row == 0 && player1.col == crownColLeft) {

@@ -5,6 +5,8 @@ class Block {
   int moveDir = 1;
   int moveCooldown = 0;
 
+  boolean isReverseBlock = false;  // 追加：操作反転ブロックフラグ
+
   Block(int col, int row, int side) {
     this.col = col;
     this.row = row;
@@ -12,6 +14,7 @@ class Block {
     this.isMoving = false;
     moveDir = 1;
     moveCooldown = 0;
+    isReverseBlock = false;  // 初期化
   }
 
   void setMoving(boolean moving) {
@@ -36,32 +39,35 @@ class Block {
     }
   }
 
+  void display() {
+    int xOffset = (side == 0) ? 0 : width / 2;
+    float x = xOffset + col * cellW;
+    float y = row * cellH;
 
-void display() {
-  int xOffset = (side == 0) ? 0 : width / 2;
-  float x = xOffset + col * cellW;
-  float y = row * cellH;
+    // 反転ブロックならalien画像表示
+    if (isReverseBlock && alienImg != null) {
+      image(alienImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+      return;
+    }
 
-  if (isMoving) {
-    if (moveDir > 0 && carRightImg != null) {
-      image(carRightImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
-    } else if (moveDir < 0 && carLeftImg != null) {
-      image(carLeftImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+    if (isMoving) {
+      if (moveDir > 0 && carRightImg != null) {
+        image(carRightImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+      } else if (moveDir < 0 && carLeftImg != null) {
+        image(carLeftImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
+      } else {
+        fill(120);
+        noStroke();
+        rect(x, y, cellW, cellH);
+      }
+    } else if (!isMoving && treeImg != null) {
+      image(treeImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
     } else {
       fill(120);
       noStroke();
       rect(x, y, cellW, cellH);
     }
-  } else if (!isMoving && treeImg != null) {
-    image(treeImg, x + cellW * 0.1, y + cellH * 0.1, cellW * 0.8, cellH * 0.8);
-  } else {
-    fill(120);
-    noStroke();
-    rect(x, y, cellW, cellH);
   }
-}
-
-
 
   boolean isHit(Player p) {
     int xOffset = (side == 0) ? 0 : width / 2;
