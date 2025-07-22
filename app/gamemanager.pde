@@ -40,8 +40,8 @@ void setupGame() {
     if (random(1) < 0.3) bLeft.setMoving(true);
     if (random(1) < 0.3) bRight.setMoving(true);
     
-    if (random(1) < 0.1 && bLeft.isMoving) bLeft.isReverseBlock = true;
-    if (random(1) < 0.1 && bRight.isMoving) bRight.isReverseBlock = true;
+    if (random(1) < 0.25 && bLeft.isMoving) bLeft.isReverseBlock = true;
+    if (random(1) < 0.25 && bRight.isMoving) bRight.isReverseBlock = true;
 
     blocks.add(bLeft);
     blocks.add(bRight);

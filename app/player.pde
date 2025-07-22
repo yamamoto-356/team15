@@ -19,8 +19,8 @@ class Player {
 
   // ジャンプ用変数
   boolean isJumping = false;
-  float jumpVelocity = 0;
-  float gravity = 0.5;
+  float jumpVelocity = -8;
+  float gravity = 0.7;
   float baseY;          // Y座標の基本位置（行から計算）
   float shakeOffsetY = 0; // 揺れのオフセット
 
