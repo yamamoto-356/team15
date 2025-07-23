@@ -88,45 +88,51 @@ void update() {
   for (Block b : blocks) {
     b.update();
 
-    if (b.isHit(player1)) {
-      if (b.isReverseBlock) {
-        player1.isReversed = true;
-        player1.reverseEndTime = millis() + 5000;
-      }
+if (b.isHit(player1)) {
+  if (b.isReverseBlock) {
+    // エイリアンに当たったときの処理
+    player1.isReversed = true;
+    player1.reverseEndTime = millis() + 6000;
+    alienSound.play();
+  } else {
+    // 通常のブロックに当たったときの処理
+    int xOffset = (b.side == 0) ? 0 : width / 2;
+    float ex = xOffset + b.col * cellW;
+    float ey = b.row * cellH;
+    explosions.add(new Explosion(ex, ey));
 
-      int xOffset = (b.side == 0) ? 0 : width / 2;
-      float ex = xOffset + b.col * cellW;
-      float ey = b.row * cellH;
-      explosions.add(new Explosion(ex, ey));
-
-      if (b.isMoving) {
-        hitSound.play();
-      } else {
-        treeSound.play();
-      }
-
-      player1.reset();
+    if (b.isMoving) {
+      hitSound.play();
+    } else {
+      treeSound.play();
     }
 
-    if (b.isHit(player2)) {
-      if (b.isReverseBlock) {
-        player2.isReversed = true;
-        player2.reverseEndTime = millis() + 5000;
-      }
+    player1.reset();
+  }
+}
 
-      int xOffset = (b.side == 0) ? 0 : width / 2;
-      float ex = xOffset + b.col * cellW;
-      float ey = b.row * cellH;
-      explosions.add(new Explosion(ex, ey));
 
-      if (b.isMoving) {
-        hitSound.play();
-      } else {
-        treeSound.play();
-      }
+if (b.isHit(player2)) {
+  if (b.isReverseBlock) {
+    player2.isReversed = true;
+    player2.reverseEndTime = millis() + 6000;
+    alienSound.play();
+  } else {
+    int xOffset = (b.side == 0) ? 0 : width / 2;
+    float ex = xOffset + b.col * cellW;
+    float ey = b.row * cellH;
+    explosions.add(new Explosion(ex, ey));
 
-      player2.reset();
+    if (b.isMoving) {
+      hitSound.play();
+    } else {
+      treeSound.play();
     }
+
+    player2.reset();
+  }
+}
+
 
     if (player1.isDead()) {
       crownTaken = true;

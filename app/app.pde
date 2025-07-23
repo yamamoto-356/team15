@@ -8,6 +8,8 @@ SoundFile hitSound;
 SoundFile goalSound;
 SoundFile healSound;
 SoundFile treeSound;
+SoundFile alienSound;
+
 
 PImage crownImg;
 PImage player1RightImg, player1LeftImg;
@@ -55,6 +57,7 @@ void setup() {
   goalSound = new SoundFile(this, "goal.mp3");
   treeSound = new SoundFile(this, "treesound.mp3");
   healSound = new SoundFile(this, "heal.mp3");
+  alienSound = new SoundFile(this, "alien.mp3");
 
   
 
@@ -110,10 +113,22 @@ void drawGrid() {
 
 void drawStartScreen() {
   background(220);
+  textAlign(CENTER, CENTER);
   fill(0);
-  textSize(32);
-  text("Press SPACE or ENTER to Start", width / 2, height / 2);
+  textSize(36);
+  text("Press SPACE or ENTER to Start", width / 2, height / 3);
+
+  textSize(20);
+  fill(50);
+  text("● Hit tree or car: Go back to start & lose 1 heart", width / 2, height / 2);
+  text("● Hit alien: Controls are reversed for 5 seconds", width / 2, height / 2 + 40);
+
+  fill(100);
+  textSize(16);
+  text("Press SPACE or ENTER to begin the game!", width / 2, height * 0.75);
 }
+
+
 
 void drawCountdown() {
   int elapsed = (millis() - countdownStartMillis) / 1000;
