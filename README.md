@@ -19,4 +19,4 @@
 <br>
 
 # [ゲームの説明書]
-pdfのダウンロードはこちらから
+pdfのダウンロードはこちらから[https://github.com/yamamoto-356/team15/blob/main/%E3%83%81%E3%83%BC%E3%83%A015%E8%AA%AC%E6%98%8E%E6%9B%B8.pdf]
